@@ -13,13 +13,16 @@ case class RightNode( text: String, right: Node ) extends Node
 object Trie extends App {
 
   val filename = "wordlist.txt"
-
-  var tree: Node = null
+  var trie: Node = null;
   
-  def loadTrie( filename: String ) {
-    for( line <- Source.fromPath( filename ).getLine()) {
+  def loadTrie( ) {
+    var tree: Node = null
+    
+    for( line <- Source.fromFile( filename ).getLines()) {
       tree = insert( tree, line )
+//      println("tree"+tree )
     }
+    trie = tree
   }
   
   def insert( tree: Node, word:String ) : Node = {
@@ -50,4 +53,22 @@ object Trie extends App {
       return tree
     };
   }
+  
+  def printTrie( tree: Node ) {
+    tree match {
+      case LeafNode( text ) => println( text )
+     
+      case LeftNode( text, left ) => println( "/\n" + printTrie(left))
+      
+      case RightNode( text, right ) => println( "\\" + printTrie(right))
+   
+      case FullNode( text, left, right ) => println( "/  \\" +printTrie( left ) + printTrie( right ))
+    }
+  }
+  
+    Trie.loadTrie()
+    Trie.printTrie( Trie.trie )
+
 }
+
+
